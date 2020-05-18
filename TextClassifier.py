@@ -10,6 +10,7 @@ import pandas as pd
 # Modelling
 from sklearn import model_selection, preprocessing, linear_model, naive_bayes, metrics, svm
 from sklearn.model_selection import train_test_split
+from sklearn import decomposition, ensemble
 
 # Data preprocessing
 from sklearn.pipeline import make_pipeline
