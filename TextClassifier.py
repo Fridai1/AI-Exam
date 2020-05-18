@@ -24,20 +24,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import classification_report
 
-##### TEST REMOVE THIS
-from sklearn.datasets import fetch_20newsgroups
-categories = ['sci.crypt', 'talk.politics.misc','sci.space', 'comp.graphics', 'talk.politics.guns', 'sci.med' ]
-remove_these = ('headers', 'footers', 'quotes')
-train_set = fetch_20newsgroups(subset='train', categories=categories, shuffle=True, remove=remove_these)
-test_set = fetch_20newsgroups(subset='test', categories=categories, shuffle=True, remove=remove_these)
 
-dora_X_train, dora_y_train = train_set.data, train_set.target
-dora_X_test, dora_y_test = test_set.data, test_set.target
-
-target_names = train_set.target_names
-
-
-#### END TEST
 
 # HELPER METHODS
 
@@ -139,7 +126,7 @@ X_train_tfidf = tfidf_vect.transform(X_train)
 X_test_tfidf = tfidf_vect.transform(X_test)
 
 
-# [[[NAIVE BAYES]]]
+# [[[Training and testing]]]
 
 label = ConvertColumnArrayToNormalArray(y_train)
 accuracy = train_model(classifier = naive_bayes.MultinomialNB(),
