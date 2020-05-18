@@ -24,7 +24,6 @@ from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import classification_report
 
-#### END TEST
 
 # HELPER METHODS
 
@@ -128,7 +127,7 @@ X_train_tfidf = tfidf_vect.transform(X_train)
 X_test_tfidf = tfidf_vect.transform(X_test)
 
 
-# [[[NAIVE BAYES]]]
+# [[[Training and testing]]]
 
 label = ConvertColumnArrayToNormalArray(y_train)
 accuracy = train_model(classifier = naive_bayes.MultinomialNB(),
