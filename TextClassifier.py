@@ -24,23 +24,9 @@ from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import classification_report
 
-##### TEST REMOVE THIS
-from sklearn.datasets import fetch_20newsgroups
-categories = ['sci.crypt', 'talk.politics.misc','sci.space', 'comp.graphics', 'talk.politics.guns', 'sci.med' ]
-remove_these = ('headers', 'footers', 'quotes')
-train_set = fetch_20newsgroups(subset='train', categories=categories, shuffle=True, remove=remove_these)
-test_set = fetch_20newsgroups(subset='test', categories=categories, shuffle=True, remove=remove_these)
-
-dora_X_train, dora_y_train = train_set.data, train_set.target
-dora_X_test, dora_y_test = test_set.data, test_set.target
-
-target_names = train_set.target_names
-
-
 #### END TEST
 
 # HELPER METHODS
-
 
 def train_model(classifier, feature_vector_train, label, feature_vector_valid, is_neural_net=False):
     # fit the training dataset on the classifier
@@ -49,11 +35,14 @@ def train_model(classifier, feature_vector_train, label, feature_vector_valid, i
     
     # predict the labels on validation dataset
     predictions = classifier.predict(feature_vector_valid)
-    
     if is_neural_net:
         predictions = predictions.argmax(axis=-1)
-    
-    return metrics.accuracy_score(predictions, y_test)
+    print(confusion_matrix(y_test, predictions))
+    i = 0
+    while i < 5:
+        print(f'y_test[{i}]: {y_test[i]}, y_pred[{i}]: {predictions[i]}')
+        i+=1
+    return metrics.accuracy_score(y_test, predictions)
 
 def ConvertColumnArrayToNormalArray(array):
     newArray = []
@@ -183,6 +172,7 @@ accuracy = train_model(classifier = ensemble.RandomForestClassifier(),
                        label = label,
                        feature_vector_valid = X_test_tfidf)
 print(f'RF, tf-idf vectors: {accuracy}')
+
 
 
 
