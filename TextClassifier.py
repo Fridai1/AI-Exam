@@ -4,6 +4,7 @@ import json
 import numpy as np
 import nltk
 from nltk.corpus import stopwords
+nltk.download('stopwords')
 # Modelling
 from sklearn import model_selection, preprocessing, naive_bayes, metrics, svm
 from sklearn.model_selection import train_test_split
