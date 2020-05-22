@@ -2,6 +2,8 @@ import pandas as pd
 import re
 import json
 import numpy as np
+import nltk
+from nltk.corpus import stopwords
 # Modelling
 from sklearn import model_selection, preprocessing, naive_bayes, metrics, svm
 from sklearn.model_selection import train_test_split
@@ -22,9 +24,7 @@ from sklearn.metrics import confusion_matrix
 from sklearn.metrics import classification_report
 
 
-
 # HELPER METHODS
-
 
 
 def train_model(classifier, feature_vector_train, label, feature_vector_valid, is_neural_net=False):
@@ -34,13 +34,13 @@ def train_model(classifier, feature_vector_train, label, feature_vector_valid, i
     
     # predict the labels on validation dataset
     predictions = classifier.predict(feature_vector_valid)
+
     
     
     if is_neural_net:
         predictions = predictions.argmax(axis=-1)
-    #print("\n")
-    #print (confusion_matrix(y_test, predictions,))
-    
+
+
     return metrics.accuracy_score(y_test, predictions)
 
 def ConvertColumnArrayToNormalArray(array):
@@ -207,7 +207,10 @@ y_test = encoder.fit_transform(y_test)
 # analyzer=word means that we chose to create an n-gram over words compared to chars or char_wb which is a special n-gram
 # when using analyzer=word we can choose a token pattern which is decided in a regular expression 
 # in this case the '\w{1,}' means that it will match a word with at least 1 character length.
-count_vect = CountVectorizer(analyzer='word', token_pattern=r'\w{1,}', stop_words='english', max_features=5000)
+
+stop_words = set(stopwords.words('english'))
+
+count_vect = CountVectorizer(analyzer='word', token_pattern=r'\w{1,}', stop_words=stop_words, max_features=5000)
 
 count_vect.fit(X_train)
 
@@ -227,13 +230,13 @@ X_test_count = count_vect.transform(X_test)
 # now we are creating the TF-IDF score based on that n-gram.
 
 #tfidf_vect = TfidfVectorizer(analyzer='word', token_pattern='\w{1,}', max_features=5000)
-tfidf_vect = TfidfVectorizer(encoding='utf-8',lowercase=True, stop_words='english', sublinear_tf=True, use_idf=True)
+tfidf_vect = TfidfVectorizer(encoding='utf-8',lowercase=True, stop_words=stop_words, sublinear_tf=True, use_idf=True,max_features=5000)
 tfidf_vect.fit(X_train)
 X_train_tfidf = tfidf_vect.transform(X_train)
 X_test_tfidf = tfidf_vect.transform(X_test)
 
 # ngram level tf-idf 
-tfidf_vect_ngram = TfidfVectorizer(analyzer='word', token_pattern=r'\w{1,}', ngram_range=(2,3))
+tfidf_vect_ngram = TfidfVectorizer(analyzer='word', token_pattern=r'\w{1,}', ngram_range=(2,3),stop_words=stop_words,max_features=5000,lowercase=True)
 tfidf_vect_ngram.fit(X_train)
 X_train_tfidf_ngram =  tfidf_vect_ngram.transform(X_train)
 X_test_tfidf_ngram =  tfidf_vect_ngram.transform(X_test)
@@ -254,53 +257,56 @@ model.score(X_test, y_test)
 # [[[Training and testing]]]
 
 label = ConvertColumnArrayToNormalArray(y_train)
+accuracy = train_model(classifier = naive_bayes.MultinomialNB(),
+                       feature_vector_train = X_train_count,
+                       label = label,
+                       feature_vector_valid = X_test_count)
+print(f'NB, Count vectors: {accuracy}')
+
+accuracy = train_model(classifier = naive_bayes.MultinomialNB(),
+                       feature_vector_train = X_train_tfidf,
+                       label = label,
+                       feature_vector_valid = X_test_tfidf)
+print(f'NB, tf-idf vectors: {accuracy}')
+
+
+accuracy = train_model(classifier = svm.SVC(),
+                       feature_vector_train = X_train_count,
+                       label = label,
+                       feature_vector_valid = X_test_count)
+print(f'SVM, Count vectors: {accuracy}')
+
+accuracy = train_model(classifier = svm.SVC(),
+                       feature_vector_train = X_train_tfidf,
+                       label = label,
+                       feature_vector_valid = X_test_tfidf)
+print(f'SVM, tf-idf vectors: {accuracy}')
+
+accuracy = train_model(classifier = ensemble.RandomForestClassifier(),
+                       feature_vector_train = X_train_count,
+                       label = label,
+                       feature_vector_valid = X_test_count)
+print(f'RF, Count vectors: {accuracy}')
+
+accuracy = train_model(classifier = ensemble.RandomForestClassifier(),
+                       feature_vector_train = X_train_tfidf,
+                       label = label,
+                       feature_vector_valid = X_test_tfidf)
+print(f'RF, tf-idf vectors: {accuracy}')
+
 # =============================================================================
-# accuracy = train_model(classifier = naive_bayes.MultinomialNB(),
-#                        feature_vector_train = X_train_count,
-#                        label = label,
-#                        feature_vector_valid = X_test_count)
-# print(f'NB, Count vectors: {accuracy}')
-# 
-# accuracy = train_model(classifier = naive_bayes.MultinomialNB(),
-#                        feature_vector_train = X_train_tfidf,
-#                        label = label,
-#                        feature_vector_valid = X_test_tfidf)
-# print(f'NB, tf-idf vectors: {accuracy}')
-# 
-# 
-# accuracy = train_model(classifier = svm.SVC(),
-#                        feature_vector_train = X_train_count,
-#                        label = label,
-#                        feature_vector_valid = X_test_count)
-# print(f'SVM, Count vectors: {accuracy}')
-# 
-# accuracy = train_model(classifier = svm.SVC(),
-#                        feature_vector_train = X_train_tfidf,
-#                        label = label,
-#                        feature_vector_valid = X_test_tfidf)
-# print(f'SVM, tf-idf vectors: {accuracy}')
-# 
-# accuracy = train_model(classifier = ensemble.RandomForestClassifier(),
-#                        feature_vector_train = X_train_count,
-#                        label = label,
-#                        feature_vector_valid = X_test_count)
-# print(f'RF, Count vectors: {accuracy}')
-# 
-# accuracy = train_model(classifier = ensemble.RandomForestClassifier(),
-#                        feature_vector_train = X_train_tfidf,
-#                        label = label,
-#                        feature_vector_valid = X_test_tfidf)
-# print(f'RF, tf-idf vectors: {accuracy}')
+# y_arr = np.asarray(label)
+# y_arr.flatten()
+# yvonne = y_arr.astype(np.int32)
+# classifier = create_model_architecture(X_train_tfidf_ngram.shape[1])
+# accuracy = train_model(classifier = classifier,
+#                        feature_vector_train = X_train_tfidf_ngram,
+#                        label = yvonne,
+#                        feature_vector_valid = X_test_tfidf_ngram,
+#                        is_neural_net=True)
+# print ("NN, Ngram Level TF IDF Vectors",  accuracy)
 # =============================================================================
 
-y_arr = np.asarray(label)
-classifier = create_model_architecture(X_train_tfidf_ngram.shape[1])
-accuracy = train_model(classifier = classifier,
-                       feature_vector_train = X_train_tfidf_ngram,
-                       label = y_arr,
-                       feature_vector_valid = X_test_tfidf_ngram,
-                       is_neural_net=True)
-print ("NN, Ngram Level TF IDF Vectors",  accuracy)
 
 
 
