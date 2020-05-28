@@ -77,23 +77,7 @@ def TransformGenre(array):
             counter += 1
     return genreArray, failedIndexes
             
-def create_model_architecture(input_size):
-    # create input layer 
-    input_layer = layers.Input((input_size, ), sparse=True)
-    
-    # create hidden layer
-    hidden_layer = layers.Dense(100, activation="relu")(input_layer)
-    
-    # create output layer
-    output_layer = layers.Dense(1, activation="sigmoid")(hidden_layer)
-
-    classifier = models.Model(inputs = input_layer, outputs = output_layer)
-    classifier.compile(optimizer=optimizers.Adam(), loss='binary_crossentropy')
-    return classifier      
-
-
-
-    
+     
     
 
 # [[[[DATASET PREPARATION]]]]
@@ -243,17 +227,6 @@ X_train_tfidf_ngram =  tfidf_vect_ngram.transform(X_train)
 X_test_tfidf_ngram =  tfidf_vect_ngram.transform(X_test)
 
 
-## DORAS
-tfidf = TfidfVectorizer(encoding='utf-8',lowercase=True, stop_words='english', max_df=0.5, sublinear_tf=True, use_idf=True)
-tfidf.fit_transform(X_train)
-classifier2 = naive_bayes.MultinomialNB()
-model = make_pipeline(tfidf, classifier2)
-model.fit(X_train, y_train)
-y_predicted = model.predict(X_test)
-model.score(X_test, y_test)
-
-### END OF DORA
-
 
 # [[[Training and testing]]]
 
@@ -365,22 +338,3 @@ tokens.head()
 inversed = encoder.inverse_transform([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19])
 
 classcount = nb.class_count_
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
