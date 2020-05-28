@@ -9,7 +9,7 @@ nltk.download('stopwords')
 from sklearn import model_selection, preprocessing, naive_bayes, metrics, svm
 from sklearn.model_selection import train_test_split
 from sklearn import decomposition, ensemble
-from keras import layers, models, optimizers
+
 
 # Data preprocessing
 from sklearn.pipeline import make_pipeline
@@ -17,7 +17,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn import preprocessing
-from keras.preprocessing import text, sequence
+
 
 # validation
 from sklearn.metrics import accuracy_score
@@ -257,8 +257,10 @@ model.score(X_test, y_test)
 
 # [[[Training and testing]]]
 
+nb = naive_bayes.MultinomialNB()
+
 label = ConvertColumnArrayToNormalArray(y_train)
-accuracy = train_model(classifier = naive_bayes.MultinomialNB(),
+accuracy = train_model(classifier = nb,
                        feature_vector_train = X_train_count,
                        label = label,
                        feature_vector_valid = X_test_count)
@@ -308,14 +310,61 @@ print(f'RF, tf-idf vectors: {accuracy}')
 # print ("NN, Ngram Level TF IDF Vectors",  accuracy)
 # =============================================================================
 
+X_train_tokens = count_vect.get_feature_names()
+print(X_train_tokens[0:50])
+print(X_train_tokens[-50:])
+nb.feature_count_
+nb.feature_count_.shape
 
 
 
+Action_token_count = nb.feature_count_[0, :]
+Adventure_token_count = nb.feature_count_[1, :]
+Animation_token_count = nb.feature_count_[2, :]
+Comedy_token_count = nb.feature_count_[3, :]
+Crime_token_count = nb.feature_count_[4, :]
+Documentary_token_count = nb.feature_count_[5, :]
+Drama_token_count = nb.feature_count_[6, :]
+Family_token_count = nb.feature_count_[7, :]
+Fantasy_token_count = nb.feature_count_[8, :]
+Foreign_token_count = nb.feature_count_[9, :]
+History_token_count = nb.feature_count_[10, :]
+Horror_token_count = nb.feature_count_[11, :]
+Music_token_count = nb.feature_count_[12, :]
+Mystery_token_count = nb.feature_count_[13, :]
+Romance_token_count = nb.feature_count_[14, :]
+Science_token_count = nb.feature_count_[15, :]
+TV_token_count = nb.feature_count_[16, :]
+Thriller_token_count = nb.feature_count_[17, :]
+War_token_count = nb.feature_count_[18, :]
+Western_token_count = nb.feature_count_[19, :]
 
 
+tokens = pd.DataFrame({'token':X_train_tokens, 'Action':Action_token_count,
+                       'Adventure':Adventure_token_count,
+                       'Animation':Animation_token_count,
+                       'Comedy':Comedy_token_count,
+                       'Crime':Crime_token_count,
+                       'Documentary':Documentary_token_count,
+                       'Drama':Drama_token_count,
+                       'Family':Family_token_count,
+                       'Fantasy':Fantasy_token_count,
+                       'Foreign':Foreign_token_count,
+                       'History':History_token_count,
+                       'Horror':Horror_token_count,
+                       'Music':Music_token_count,
+                       'Mystery':Mystery_token_count,
+                       'Romance':Romance_token_count,
+                       'Science':Science_token_count,
+                       'TV':TV_token_count,
+                       'Thriller':Thriller_token_count,
+                       'War':War_token_count,
+                       'Western':Western_token_count
+                       }).set_index('token')
+tokens.head()
+inversed = encoder.inverse_transform([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19])
 
-
-
+classcount = nb.class_count_
 
 
 
